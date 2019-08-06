@@ -87,7 +87,6 @@ resource "aws_instance" "instance_connect" {
 #!/bin/bash
 yum update -y -q
 yum install ec2-instance-connect
-grep AuthorizedKeys /etc/ssh/sshd_config
 EOF
 }
 
