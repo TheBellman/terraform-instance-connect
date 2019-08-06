@@ -12,7 +12,7 @@ resource "aws_iam_role" "instance_connect" {
     {
       "Effect": "Allow",
       "Principal": {
-        "Service": "ec2.amazonaws.com"
+        "Service": ["ec2.amazonaws.com", "ssm.amazonaws.com" ]
       },
       "Action": "sts:AssumeRole"
     }
@@ -36,7 +36,7 @@ resource "aws_iam_instance_profile" "instance_connect" {
 # ------------------------------------------------------------------------------
 
 resource "aws_security_group" "instance_connect" {
-  vpc_id      = "${data.aws_vpc.default.id}"
+  vpc_id      = "${aws_vpc.instance_connect.id}"
   name_prefix = "instance_connect"
   description = "allow ssh"
 
@@ -68,7 +68,7 @@ resource "aws_security_group" "instance_connect" {
 resource "aws_instance" "instance_connect" {
   ami                         = "${data.aws_ami.target_ami.id}"
   instance_type               = "t2.micro"
-  subnet_id                   = "${data.aws_subnet.default.id}"
+  subnet_id                   = "${aws_subnet.instance_connect.id}"
   associate_public_ip_address = true
 
   root_block_device = {
@@ -96,7 +96,7 @@ EOF
 # ------------------------------------------------------------------------------
 resource "aws_iam_policy" "instance_connect" {
   name        = "instance-connect"
-  path        = "/test"
+  path        = "/test/"
   description = "Allows use of EC2 instance connect"
 
   policy = <<EOF
@@ -108,10 +108,9 @@ resource "aws_iam_policy" "instance_connect" {
   		"Action": "ec2-instance-connect:SendSSHPublicKey",
   		"Resource": "${aws_instance.instance_connect.arn}",
   		"Condition": {
-  			"StringEquals": { "ec2:osuser": "${var.test_user}" }
+  			"StringEquals": { "ec2:osuser": "ec2-user" }
   		}
   	},
-    ,
 		{
 			"Effect": "Allow",
 			"Action": "ec2:DescribeInstances",

@@ -1,9 +1,9 @@
 output "vpc_id" {
-  value = "${data.aws_vpc.default.id}"
+  value = "${aws_vpc.instance_connect.id}"
 }
 
 output "subnet_cidr" {
-  value = "${data.aws_subnet.default.cidr_block}"
+  value = "${aws_subnet.instance_connect.cidr_block}"
 }
 
 output "instance_ip" {

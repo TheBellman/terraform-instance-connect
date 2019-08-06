@@ -1,0 +1,4 @@
+aws_region="eu-west-2"
+aws_profile="????"
+aws_account_id="???"
+test_user="connect-test"

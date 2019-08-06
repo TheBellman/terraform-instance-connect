@@ -13,14 +13,6 @@ data "aws_ami" "target_ami" {
   }
 }
 
-data "aws_vpc" "default" {
-  default = "true"
-}
-
-data "aws_subnet" "default" {
-  vpc_id = "${data.aws_vpc.default.id}"
-  availability_zone = "${data.aws_availability_zones.available.names[0]}"
-}
 # -----------------------------------------------------------------------------
 # items not likely to change much
 # -----------------------------------------------------------------------------
@@ -34,6 +26,11 @@ variable "tags" {
   }
 }
 
+# 172.33.0.0 - 172.33.255.255
+variable "vpc_cidr" {
+  default = "172.33.0.0/16"
+}
+
 /* variables to inject via terraform.tfvars */
 variable "aws_region" {}
 variable "aws_account_id" {}
@@ -45,5 +42,5 @@ variable "test_user" {}
 # -----------------------------------------------------------------------------
 variable "ssh_list" {
   type = "list"
-  default = [ "83.240.144.127/32" ]
+  default = [ "83.240.144.127/32", "185.230.124.67/32" ]
 }
